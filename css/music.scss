@@ -1,0 +1,104 @@
+$Mahogany : #620808;
+$AppleBlossom : #a53f3f;
+$GoldenSand : #f4ce74;
+$EggWhite : #ffe9c1;
+$OrangeRoughy : #d5441c;
+$mainfont : "JF Flat Regular";
+
+@font-face {
+    font-family: "JF Flat Regular";
+    src: url('http://f9ir.github.io/acc/acc/font/JF-Flat-regular.eot');
+    src: url('http://f9ir.github.io/acc/acc/font/JF-Flat-regular.eot?#iefix') format('embedded-opentype'),
+    url('http://f9ir.github.io/acc/acc/font/JF-Flat-regular.svg#JF Flat Regular') format('svg'),
+    url('http://f9ir.github.io/acc/acc/font/JF-Flat-regular.woff') format('woff'),
+    url('http://f9ir.github.io/acc/acc/font/JF-Flat-regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body{
+  background: #f6704b;
+}
+
+*{
+  margin: 0;
+  padding: 0;
+}
+.accordion{
+    margin:50px auto;
+    width: 380px;
+    background: #ccc;
+    cursor: pointer;
+    .item{
+        height: 100px;
+        h3{
+            display: inline-block;
+            vertical-align: middle;
+            height: 100%;
+            padding-left: 50px;
+            font-family: $mainfont;
+            font-size: 20px;
+            font-weight: 400;
+        }
+        img{
+            padding-left: 15px;
+            width: 30px;
+            vertical-align: middle;
+        }
+        h3:before{
+            content: "";
+            display: inline-block;
+            vertical-align: middle;
+            height: 100%;
+        }
+    }
+    .item:first-of-type{
+        background: $Mahogany;
+        color: $GoldenSand;
+    }
+    .item:nth-of-type(2){
+        background: $AppleBlossom;
+        color: $EggWhite;
+    }
+    .item:nth-of-type(3){
+        background: $GoldenSand;
+        color: $Mahogany;
+    }
+    .item:nth-of-type(4){
+        background: $EggWhite;
+        color: $OrangeRoughy;
+    }
+    .item:last-of-type{
+        background: $OrangeRoughy;
+        color: $EggWhite;
+    }
+    p{
+        font-family: $mainfont;
+        font-size: 18px;
+        font-weight: 400;
+        padding: 15px;
+        display: none;
+        box-shadow: inset 0 3px 7px rgba(#000, 0.2);
+    }
+    p:first-of-type{
+        background: $Mahogany;
+        color: $GoldenSand;
+    }
+    p:nth-of-type(2){
+        background: $AppleBlossom;
+        color: $EggWhite;
+    }
+    p:nth-of-type(3){
+        background: $GoldenSand;
+        color: $Mahogany;
+
+    }
+    p:nth-of-type(4){
+        background: $EggWhite;
+        color: $OrangeRoughy;
+    }
+    p:last-of-type{
+        background: $OrangeRoughy;
+        color: $EggWhite;
+    }
+}
