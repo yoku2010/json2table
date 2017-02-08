@@ -72,18 +72,13 @@ h1 {
     color: #FFF;
     border-top: 1px solid #8BC34A;
 }
-table td.k {
-    font-weight: bold;
-    background: #009688;
-    color: #FFF;
+.modal-body {
+    background: #8BC34A;
 }
-table td.v {
-    background: #FFF;
+.modal-header {
+    background: #212121;
+    color: #E6E5E5;
 }
-table td.o {
-    padding: 0;
-    background: #EEE;
-}
-table td.o table {
-    margin: 0;
+.modal-header .close {
+    color: #E6E5E5;
 }

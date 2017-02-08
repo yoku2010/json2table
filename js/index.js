@@ -11,7 +11,23 @@
                     "Name": "Ankit",
                     "Age": "29 Years",
                     "Mobile No": ["813093938383", "883838382728"],
-                    "Address": "Ajmer, Rajasthan"
+                    "Address": "Ajmer, Rajasthan",
+                    "Friends": [
+                        {
+                            "Name": "Ankit",
+                            "Age": "29 Years",
+                            "Mobile No": ["813093938383", "883838382728"],
+                            "Address": "Ajmer, Rajasthan",
+                            "Friends": [
+                                {
+                                    "Name": "Ankit",
+                                    "Age": "29 Years",
+                                    "Mobile No": ["813093938383", "883838382728"],
+                                    "Address": "Ajmer, Rajasthan"
+                                }
+                            ]
+                        }
+                    ]
                 },
                 {
                     "Name": "Arpit",
@@ -34,7 +50,9 @@
                 "Twitter": "https://twitter.com/yoku_2010/",
                 "LinkedIn": "http://www.linkedin.com/in/yoku2010/",
                 "Online Resume": "https://yoku2010.github.io/resume/"
-            }
-        }
+            },
+            "Hobbies": "Singing, Coding"
+        },
+        displayLevel: 2
     });
 }(jQuery));
