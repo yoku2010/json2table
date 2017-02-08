@@ -11,7 +11,7 @@
 }
 body {
     font-family: "JF Flat Regular";
-    background: #8BC34A;
+    background: #A2CF6E;
 }
 section {
     min-height: 600px;
@@ -21,7 +21,7 @@ a {
     color: #009688;
 }
 a:hover, a:focus {
-    color: #8BC34A;
+    color: #A2CF6E;
 }
 h1 {
     color: #009688;
@@ -70,14 +70,21 @@ h1 {
     padding: 20px 0;
     margin-top: 30px;
     color: #FFF;
-    border-top: 1px solid #8BC34A;
+    border-top: 1px solid #A2CF6E;
 }
 .modal-body {
-    background: #8BC34A;
+    background: #A2CF6E;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+.modal-content {
+    background: #212121;
 }
 .modal-header {
-    background: #212121;
     color: #E6E5E5;
+    border: 1px solid #E6E5E5;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
 }
 .modal-header .close {
     color: #E6E5E5;

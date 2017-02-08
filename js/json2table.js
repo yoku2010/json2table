@@ -28,7 +28,7 @@
                 init: function () {
                     o.func.resetAll();
                     o.func.drawToggleView(o.$me);
-                    o.func.drawJSON(opt.json, o.func.drawTable(o.$me, false), 0);
+                    o.func.drawJSON(opt.json, o.func.drawTable(o.$me, false), 0, null);
                 },
                 resetAll: function () {
                     if (opt.displayLevel === 0) {
@@ -44,13 +44,16 @@
                     $table.appendTo($container);
                     return $tbody;
                 },
-                drawJSON: function (json, $container, level) {
+                drawJSON: function (json, $container, level, key) {
                     var $tr, $td, $tbody, $trChild, $tdChild, $newContainer, $delContainer;
                     if (level >= opt.displayLevel) {
                         $delContainer = $container.parent();
                         $newContainer = $delContainer.parent().removeClass("o").addClass("v");
                         $delContainer.remove();
-                        $("<a></a>").attr("href", "#").addClass("view-more").text("view more").data("json", json).click(o.evnt.drawJSONInBox).appendTo($newContainer);
+                        $("<a></a>").attr("href", "#").text("view more").data({
+                            "json": json,
+                            "key": key
+                        }).click(o.evnt.drawJSONInBox).appendTo($newContainer);
                     } else {
                         for (var key in json) {
                             $tr = $("<tr></tr>");
@@ -62,7 +65,7 @@
                                 for (var index in json[key]) {
                                     $tdChild = $("<td></td>");
                                     if ($.isPlainObject(json[key][index])) {
-                                        o.func.drawJSON(json[key][index], o.func.drawTable($tdChild, false), level + 1);
+                                        o.func.drawJSON(json[key][index], o.func.drawTable($tdChild, false), level + 1, key);
                                     } else {
                                         $tdChild.addClass("v").text(json[key][index]);
                                     }
@@ -72,7 +75,7 @@
                                 $td.appendTo($tr);
                             } else if ($.isPlainObject(json[key])){
                                 $td = $("<td></td>").addClass("o");
-                                o.func.drawJSON(json[key], o.func.drawTable($td, false), level + 1);
+                                o.func.drawJSON(json[key], o.func.drawTable($td, false), level + 1, key);
                                 $td.appendTo($tr);
                             } else {
                                 $("<td></td>").addClass("v").text(json[key]).appendTo($tr);
@@ -107,15 +110,15 @@
                 drawJSONInBox: function (e) {
                     e.preventDefault();
                     var $this = $(this),
-                        json = $this.data("json"),
+                        data = $this.data(),
                         $div =$("<div></div>");
 
                     $div.JSON2Table({
-                        json: json,
+                        json: data.json,
                         displayLevel: opt.displayLevel
                     });
                     bootbox.dialog({
-                        title: 'A custom dialog with init',
+                        title: data.key,
                         message: $div
                     });
                 }

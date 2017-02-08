@@ -14,9 +14,10 @@
     margin: 0;
 }
 .json-2-table a.toggle-view {
-    background: #FFF;
+    background: #009688;
+    color: #FFF;
     padding: 5px;
-    border: 1px solid #009688;
+    border: 1px solid #DDD;
     display: inline-block;
     margin-bottom: -1px;
     border-top-left-radius: 5px;
@@ -24,14 +25,12 @@
     text-decoration: none;
 }
 .json-2-table a.toggle-view:hover{
-    background: #009688;
-    color: #FFF;
+    background: #FFF;
+    color: #009688;
+    border: 1px solid #009688;
     border-bottom: 1px solid #DDD;
 }
 .json-2-table a.toggle-view i {
     margin-left: 5px;
     margin-right: 5px;
-}
-.json-2-table a.view-more {
-    margin: 8px;
 }

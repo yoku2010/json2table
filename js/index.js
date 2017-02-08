@@ -53,6 +53,6 @@
             },
             "Hobbies": "Singing, Coding"
         },
-        displayLevel: 2
+        displayLevel: 1
     });
 }(jQuery));
