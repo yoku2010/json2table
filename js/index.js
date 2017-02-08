@@ -10,16 +10,22 @@
                 {
                     "Name": "Ankit",
                     "Age": "29 Years",
+                    "Mobile No": ["813093938383", "883838382728"],
                     "Address": "Ajmer, Rajasthan"
                 },
                 {
                     "Name": "Arpit",
                     "Age": "27 Years",
+                    "Mobile No": [813093938383, 883838382728],
                     "Address": "Noida, Uttar Pradesh"
                 },
                 {
                     "Name": "Harish Sharma",
                     "Age": "23 Years",
+                    "Mobile No": {
+                        "Home": 8988989899,
+                        "Work": 8899977779
+                    },
                     "Address": "Gurgaon, Haryana"
                 }
             ],

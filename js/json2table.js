@@ -48,7 +48,11 @@
                             $trChild = $("<tr></tr>");
                             for (var index in json[key]) {
                                 $tdChild = $("<td></td>");
-                                o.func.drawJSON(json[key][index], o.func.drawTable($tdChild));
+                                if ($.isPlainObject(json[key][index])) {
+                                    o.func.drawJSON(json[key][index], o.func.drawTable($tdChild));
+                                } else {
+                                    $tdChild.addClass("v").text(json[key][index]);
+                                }
                                 $tdChild.appendTo($trChild);
                             }
                             $trChild.appendTo($tbody);
