@@ -45,7 +45,7 @@
                     return $tbody;
                 },
                 drawJSON: function (json, $container, level, key) {
-                    var $tr, $td, $tbody, $trChild, $tdChild, $newContainer, $delContainer;
+                    var $tr, $td, $tbody, $trChild, $tdChild, $newContainer, $delContainer, headerIndex;
                     if (level >= opt.displayLevel) {
                         $delContainer = $container.parent();
                         $newContainer = $delContainer.parent().removeClass("o").addClass("v");
@@ -63,9 +63,10 @@
                                 $tbody = o.func.drawTable($td, false);
                                 $trChild = $("<tr></tr>");
                                 for (var index in json[key]) {
+                                    headerIndex = parseInt(index) + 1;
                                     $tdChild = $("<td></td>");
                                     if ($.isPlainObject(json[key][index])) {
-                                        o.func.drawJSON(json[key][index], o.func.drawTable($tdChild, false), level + 1, key);
+                                        o.func.drawJSON(json[key][index], o.func.drawTable($tdChild, false), level + 1, key + " (" + headerIndex + ")");
                                     } else {
                                         $tdChild.addClass("v").text(json[key][index]);
                                     }
