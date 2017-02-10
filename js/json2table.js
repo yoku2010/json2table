@@ -13,7 +13,8 @@
                     "Your Key": "Your Value"
                 },
                 toggleView: true,
-                displayLevel: 0
+                displayLevel: 0,
+                widthPercentage: 30
             }, options);
             this.each(function () {
                 new J2T(this, options);
@@ -36,16 +37,17 @@
                     }
                     o.$me.addClass("json-2-table").empty();
                 },
-                drawTable: function ($container, border) {
+                drawTable: function ($container, noBorder) {
                     var $table = $("<table></table>").addClass("table table-bordered"),
                         $tbody = $("<tbody></tbody>");
-                    border && $table.removeClass("table-bordered");
+                    noBorder && $table.removeClass("table-bordered");
                     $tbody.appendTo($table);
                     $table.appendTo($container);
                     return $tbody;
                 },
                 drawJSON: function (json, $container, level, key) {
-                    var $tr, $td, $tbody, $trChild, $tdChild, $newContainer, $delContainer, headerIndex;
+                    var $tr, $td, $tbody, $trChild, $tdChild, $newContainer,
+                        $delContainer, headerIndex, keyLength, $div;
                     if (level >= opt.displayLevel) {
                         $delContainer = $container.parent();
                         $newContainer = $delContainer.parent().removeClass("o").addClass("v");
@@ -60,8 +62,33 @@
                             $("<td></td>").addClass("k").text(key).appendTo($tr);
                             if ($.isArray(json[key])) {
                                 $td = $("<td></td>").addClass("o");
-                                $tbody = o.func.drawTable($td, false);
+                                $div = $("<div></div>").addClass("movable");
+                                $tbody = o.func.drawTable($div, false);
                                 $trChild = $("<tr></tr>");
+                                keyLength = json[key].length;
+                                if (keyLength > 1) {
+                                    $td.addClass("scrollable");
+                                    var $left = $("<a></a>").addClass("left").attr("href", "#"),
+                                        $right = $("<a></a>").addClass("right").attr("href", "#"),
+                                        tableWidth = 100 + ((keyLength - 1)*opt.widthPercentage);
+                                    $("<i></i>").addClass("fa fa-caret-left").appendTo($left);
+                                    $("<i></i>").addClass("fa fa-caret-right").appendTo($right);
+                                    $left.on("mousedown", function (e) {
+                                        e.preventDefault()
+                                        o.timeoutId = setInterval(o.evnt.leftScroller.bind($left), 100);
+                                    }).on("mouseup mouseleave", function (e) {
+                                        e.preventDefault();
+                                        o.timeoutId && clearTimeout(o.timeoutId);
+                                    }).appendTo($td);
+                                    $right.on("mousedown", function (e) {
+                                        e.preventDefault()
+                                        o.timeoutId = setInterval(o.evnt.leftScroller.bind($right), 100);
+                                    }).on("mouseup mouseleave", function (e) {
+                                        e.preventDefault();
+                                        o.timeoutId && clearTimeout(o.timeoutId);
+                                    }).appendTo($td);
+                                    $div.css("width", tableWidth + "%");
+                                }
                                 for (var index in json[key]) {
                                     headerIndex = parseInt(index) + 1;
                                     $tdChild = $("<td></td>");
@@ -73,6 +100,7 @@
                                     $tdChild.appendTo($trChild);
                                 }
                                 $trChild.appendTo($tbody);
+                                $div.appendTo($td);
                                 $td.appendTo($tr);
                             } else if ($.isPlainObject(json[key])){
                                 $td = $("<td></td>").addClass("o");
@@ -122,6 +150,18 @@
                         title: data.key,
                         message: $div
                     });
+                },
+                leftScroller: function () {
+                    var $this = $(this),
+                        $parent = $this.parent(),
+                        $movable = $parent.find("div.movable");
+                    console.log($movable.position());
+                },
+                rightScroller: function () {
+                    var $this = $(this),
+                        $parent = $this.parent(),
+                        $movable = $parent.find("div.movable");
+                    console.log($movable.position());
                 }
             }
         }
