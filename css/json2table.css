@@ -37,7 +37,7 @@
 .json-2-table .scrollable {
     position: relative;
     overflow: hidden;
-    background: #333;
+    background: #EEE;
 }
 .json-2-table .scrollable .left, .json-2-table .scrollable .right {
     display: none;
@@ -64,7 +64,7 @@
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
 }
-.json-2-table .scrollable:hover .left, .json-2-table .scrollable:hover .right {
+.json-2-table .scrollable:hover>.left, .json-2-table .scrollable:hover>.right {
     display: inline-block;
 }
 .json-2-table .scrollable .left:hover, .json-2-table .scrollable .right:hover {
@@ -72,15 +72,15 @@
     color: #009688;
     background: #FFF;
 }
-.json-2-table .scrollable .left:hover {
+.json-2-table .scrollable>.left:hover {
     border-left: 0 none;
 }
-.json-2-table .scrollable .right:hover {
+.json-2-table .scrollable>.right:hover {
     border-right: 0 none;
 }
 .json-2-table .scrollable .movable {
-    position: absolute;
-    top:0;
+    position: relative;
+    top: 0;
     left: 0;
     z-index: 1;
 }
