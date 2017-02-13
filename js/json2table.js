@@ -29,13 +29,23 @@
                 init: function () {
                     o.func.resetAll();
                     o.func.drawToggleView(o.$me);
-                    o.func.drawJSON(opt.json, o.func.drawTable(o.$me, false), 0, null);
+                    o.func.drawInitial(opt.json, o.$me, 0, null);
                 },
                 resetAll: function () {
                     if (opt.displayLevel === 0) {
                         opt.displayLevel = Infinity;
                     }
                     o.$me.addClass("json-2-table").empty();
+                },
+                drawInitial: function (obj, $container, level, innerKey) {
+                    var $tbody = o.func.drawTable($container, false);
+                    if ($.isArray(obj)) {
+                        o.func.drawArray(obj, $tbody, level, innerKey);
+                    } else if ($.isPlainObject(obj)){
+                        o.func.drawJSON(obj, $tbody, level, innerKey);
+                    } else {
+                        bootbox.alert("You have enter wrong JSON Object.");
+                    }
                 },
                 drawTable: function ($container, noBorder) {
                     var $table = $("<table></table>").addClass("table table-bordered"),
@@ -45,18 +55,41 @@
                     $table.appendTo($container);
                     return $tbody;
                 },
-                drawJSON: function (json, $container, level, key) {
+                drawArray: function (arr, $container, level, innerKey) {
+                    if ($.isArray(json)) {
+
+                    } else if ($.isPlainObject(json)) {
+
+                    } else {
+                        
+                    }
+                },
+                drawJSON: function (json, $container, level, innerKey) {
+                    if ($.isArray(json)) {
+
+                    } else if ($.isPlainObject(json)) {
+
+                    } else {
+                        
+                    }
+
+
                     var $tr, $td, $tbody, $trChild, $tdChild, $newContainer,
-                        $delContainer, headerIndex, keyLength, $tdDiv, $div;
+                        $delContainer, headerIndex, keyLength, $tdDiv, $div, $keyTd;
                     if (level >= opt.displayLevel) {
                         $delContainer = $container.parent();
                         $newContainer = $delContainer.parent().removeClass("o").addClass("v");
                         $delContainer.remove();
                         $("<a></a>").attr("href", "#").text("view more").data({
                             "json": json,
-                            "key": key
+                            "key": innerKey
                         }).click(o.evnt.drawJSONInBox).appendTo($newContainer);
                     } else {
+                        if ($.isArray(json)) {
+
+                        } else if ($.isPlainObject(json)) {
+
+                        }
                         for (var key in json) {
                             $tr = $("<tr></tr>");
                             $("<td></td>").addClass("k").text(key).appendTo($tr);
@@ -79,20 +112,22 @@
                                     }).on("mouseup mouseleave", function (e) {
                                         e.preventDefault();
                                         o.timeoutId && clearTimeout(o.timeoutId);
-                                    }).appendTo($tdDiv);
+                                    }).on("click", o.evnt.clickPrevent).appendTo($tdDiv);
                                     $right.on("mousedown", function (e) {
                                         e.preventDefault()
                                         o.timeoutId = setInterval(o.evnt.rightScroller.bind($right), 1);
                                     }).on("mouseup mouseleave", function (e) {
                                         e.preventDefault();
                                         o.timeoutId && clearTimeout(o.timeoutId);
-                                    }).appendTo($tdDiv);
+                                    }).on("click", o.evnt.clickPrevent).appendTo($tdDiv);
                                     $div.css("width", tableWidth + "%");
                                 }
                                 for (var index in json[key]) {
                                     headerIndex = parseInt(index) + 1;
                                     $tdChild = $("<td></td>");
-                                    if ($.isPlainObject(json[key][index]) || $.isArray(json[key][index])) {
+                                    if ($.isArray(json[key][index])) {
+                                        o.func.drawJSON(json[key][index], o.func.drawTable($tdChild, false), level + 1, index + " (" + headerIndex + ")");
+                                    } else if ($.isPlainObject(json[key][index])) {
                                         o.func.drawJSON(json[key][index], o.func.drawTable($tdChild, false), level + 1, key + " (" + headerIndex + ")");
                                     } else {
                                         $tdChild.addClass("v").text(json[key][index]);
@@ -112,6 +147,14 @@
                             }
                             $tr.appendTo($container);
                         }
+                    }
+                },
+                drawBoxButton: function (json, key, level, $container) {
+                    if (level >= opt.displayLevel) {
+                        $("<a></a>").attr("href", "#").text("view more").data({
+                            "json": json,
+                            "key": key
+                        }).click(o.evnt.drawJSONInBox).appendTo($container);
                     }
                 },
                 drawToggleView: function ($container) {
@@ -151,6 +194,9 @@
                         title: data.key,
                         message: $div
                     });
+                },
+                clickPrevent: function (e) {
+                    e.preventDefault();
                 },
                 rightScroller: function () {
                     var $this = $(this),
