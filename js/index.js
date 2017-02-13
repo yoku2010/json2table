@@ -10,7 +10,10 @@
                 {
                     "Name": "Ankit",
                     "Age": "29 Years",
-                    "Mobile No": ["813093938383", "883838382728"],
+                    "Mobile No": [[{
+                        "Home": 8988989899,
+                        "Work": 8899977779
+                    }],["813093938383", "883838382728"]],
                     "Address": "Ajmer, Rajasthan",
                     "Friends": [
                         {
@@ -53,6 +56,6 @@
             },
             "Hobbies": "Singing, Coding"
         },
-        displayLevel: 1
+        displayLevel: 0
     });
 }(jQuery));

@@ -47,7 +47,7 @@
                 },
                 drawJSON: function (json, $container, level, key) {
                     var $tr, $td, $tbody, $trChild, $tdChild, $newContainer,
-                        $delContainer, headerIndex, keyLength, $div;
+                        $delContainer, headerIndex, keyLength, $tdDiv, $div;
                     if (level >= opt.displayLevel) {
                         $delContainer = $container.parent();
                         $newContainer = $delContainer.parent().removeClass("o").addClass("v");
@@ -62,12 +62,12 @@
                             $("<td></td>").addClass("k").text(key).appendTo($tr);
                             if ($.isArray(json[key])) {
                                 $td = $("<td></td>").addClass("o");
+                                $tdDiv = $("<div></div>").addClass("scrollable");
                                 $div = $("<div></div>").addClass("movable");
                                 $tbody = o.func.drawTable($div, false);
                                 $trChild = $("<tr></tr>");
                                 keyLength = json[key].length;
                                 if (keyLength > 1) {
-                                    $td.addClass("scrollable");
                                     var $left = $("<a></a>").addClass("left").attr("href", "#"),
                                         $right = $("<a></a>").addClass("right").attr("href", "#"),
                                         tableWidth = 100 + ((keyLength - 1)*opt.widthPercentage);
@@ -75,24 +75,24 @@
                                     $("<i></i>").addClass("fa fa-caret-right").appendTo($right);
                                     $left.on("mousedown", function (e) {
                                         e.preventDefault()
-                                        o.timeoutId = setInterval(o.evnt.leftScroller.bind($left), 100);
+                                        o.timeoutId = setInterval(o.evnt.leftScroller.bind($left), 1);
                                     }).on("mouseup mouseleave", function (e) {
                                         e.preventDefault();
                                         o.timeoutId && clearTimeout(o.timeoutId);
-                                    }).appendTo($td);
+                                    }).appendTo($tdDiv);
                                     $right.on("mousedown", function (e) {
                                         e.preventDefault()
-                                        o.timeoutId = setInterval(o.evnt.leftScroller.bind($right), 100);
+                                        o.timeoutId = setInterval(o.evnt.rightScroller.bind($right), 1);
                                     }).on("mouseup mouseleave", function (e) {
                                         e.preventDefault();
                                         o.timeoutId && clearTimeout(o.timeoutId);
-                                    }).appendTo($td);
+                                    }).appendTo($tdDiv);
                                     $div.css("width", tableWidth + "%");
                                 }
                                 for (var index in json[key]) {
                                     headerIndex = parseInt(index) + 1;
                                     $tdChild = $("<td></td>");
-                                    if ($.isPlainObject(json[key][index])) {
+                                    if ($.isPlainObject(json[key][index]) || $.isArray(json[key][index])) {
                                         o.func.drawJSON(json[key][index], o.func.drawTable($tdChild, false), level + 1, key + " (" + headerIndex + ")");
                                     } else {
                                         $tdChild.addClass("v").text(json[key][index]);
@@ -100,7 +100,8 @@
                                     $tdChild.appendTo($trChild);
                                 }
                                 $trChild.appendTo($tbody);
-                                $div.appendTo($td);
+                                $div.appendTo($tdDiv);
+                                $tdDiv.appendTo($td);
                                 $td.appendTo($tr);
                             } else if ($.isPlainObject(json[key])){
                                 $td = $("<td></td>").addClass("o");
@@ -151,17 +152,28 @@
                         message: $div
                     });
                 },
-                leftScroller: function () {
-                    var $this = $(this),
-                        $parent = $this.parent(),
-                        $movable = $parent.find("div.movable");
-                    console.log($movable.position());
-                },
                 rightScroller: function () {
                     var $this = $(this),
                         $parent = $this.parent(),
-                        $movable = $parent.find("div.movable");
-                    console.log($movable.position());
+                        $movable = $parent.find(">div.movable"),
+                        left = $movable.position().left - 5;
+
+                    if (left >= 0) {
+                        left = 0;
+                    } else if ($movable.width() + left < $parent.width()) {
+                        left = $parent.width() - $movable.width();
+                    }
+                    $movable.css("left", left);
+                },
+                leftScroller: function () {
+                    var $this = $(this),
+                        $parent = $this.parent(),
+                        $movable = $parent.find(">div.movable"),
+                        left = $movable.position().left + 5;
+                    if (left >= 0) {
+                        left = 0;
+                    }
+                    $movable.css("left",  left);
                 }
             }
         }
