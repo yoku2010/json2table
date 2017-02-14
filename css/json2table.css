@@ -1,3 +1,7 @@
+.json-2-table table {
+    width:100%;
+    max-width: 100%;
+}
 .json-2-table table>tbody>tr>td.k {
     font-weight: bold;
     background: #009688;

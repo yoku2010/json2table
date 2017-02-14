@@ -9,12 +9,13 @@
     $.fn.extend({
         JSON2Table: function (options) {
             var options = $.extend({
-                json: {
+                data: {
                     "Your Key": "Your Value"
                 },
-                toggleView: true,
+                drawResponsive: true,
                 displayLevel: 0,
-                widthPercentage: 30
+                widthPercentage: 30,
+                _callResize: true
             }, options);
             this.each(function () {
                 new J2T(this, options);
@@ -25,11 +26,14 @@
     var J2T = function (me, opt) {
         var o = {
             $me: $(me),
+            $window: $(window),
+            $movableDivs: $(),
             func: {
                 init: function () {
                     o.func.resetAll();
-                    o.func.drawToggleView(o.$me);
-                    o.func.drawInitial(opt.json, o.$me, 0, null);
+                    //o.func.drawToggleView(o.$me);
+                    o.func.drawInitial(opt, "data", o.$me, 0);
+                    o.evnt.windowResize();
                 },
                 resetAll: function () {
                     if (opt.displayLevel === 0) {
@@ -37,125 +41,119 @@
                     }
                     o.$me.addClass("json-2-table").empty();
                 },
-                drawInitial: function (obj, $container, level, innerKey) {
-                    var $tbody = o.func.drawTable($container, false);
-                    if ($.isArray(obj)) {
-                        o.func.drawArray(obj, $tbody, level, innerKey);
-                    } else if ($.isPlainObject(obj)){
-                        o.func.drawJSON(obj, $tbody, level, innerKey);
+                drawInitial: function (json, key, $container, level) {
+                    var $tbody = o.func.drawTable($container, true);
+                    if ($.isArray(json[key])) {
+                        o.func.drawArray(json, key, $tbody, level);
+                    } else if ($.isPlainObject(json[key])){
+                        o.func.drawJSON(json, key, $tbody, level);
                     } else {
                         bootbox.alert("You have enter wrong JSON Object.");
                     }
                 },
-                drawTable: function ($container, noBorder) {
-                    var $table = $("<table></table>").addClass("table table-bordered"),
+                drawTable: function ($container, border) {
+                    var $table = $("<table></table>").addClass("table"),
                         $tbody = $("<tbody></tbody>");
-                    noBorder && $table.removeClass("table-bordered");
+                    border && $table.addClass("table-bordered");
                     $tbody.appendTo($table);
                     $table.appendTo($container);
                     return $tbody;
                 },
-                drawArray: function (arr, $container, level, innerKey) {
-                    if ($.isArray(json)) {
-
-                    } else if ($.isPlainObject(json)) {
-
-                    } else {
-                        
-                    }
-                },
-                drawJSON: function (json, $container, level, innerKey) {
-                    if ($.isArray(json)) {
-
-                    } else if ($.isPlainObject(json)) {
-
-                    } else {
-                        
-                    }
-
-
-                    var $tr, $td, $tbody, $trChild, $tdChild, $newContainer,
-                        $delContainer, headerIndex, keyLength, $tdDiv, $div, $keyTd;
-                    if (level >= opt.displayLevel) {
-                        $delContainer = $container.parent();
-                        $newContainer = $delContainer.parent().removeClass("o").addClass("v");
-                        $delContainer.remove();
-                        $("<a></a>").attr("href", "#").text("view more").data({
-                            "json": json,
-                            "key": innerKey
-                        }).click(o.evnt.drawJSONInBox).appendTo($newContainer);
-                    } else {
-                        if ($.isArray(json)) {
-
-                        } else if ($.isPlainObject(json)) {
-
+                drawArray: function (json, key, $container, level) {
+                    var $tr = $("<tr></tr>"), $td, boxResult, $tdDiv, $div, $tbody, $trChild, arrLength;
+                    if (opt.drawResponsive) {
+                        $td = $("<td></td>").addClass("o");
+                        $tdDiv = $("<div></div>").addClass("scrollable");
+                        $div = $("<div></div>").addClass("movable").hide();
+                        o.$movableDivs = o.$movableDivs.add($div);
+                        $tbody = o.func.drawTable($div, true);
+                        $trChild = $("<tr></tr>");
+                        arrLength = json[key].length;
+                        if (arrLength > 1) {
+                            var $left = $("<a></a>").addClass("left").attr("href", "#"),
+                                $right = $("<a></a>").addClass("right").attr("href", "#"),
+                                tableWidth = 100 + ((arrLength - 1)*opt.widthPercentage);
+                            $("<i></i>").addClass("fa fa-caret-left").appendTo($left);
+                            $("<i></i>").addClass("fa fa-caret-right").appendTo($right);
+                            $left.on("mousedown", function (e) {
+                                e.preventDefault()
+                                o.timeoutId = setInterval(o.evnt.leftScroller.bind($left), 1);
+                            }).on("mouseup mouseleave", function (e) {
+                                e.preventDefault();
+                                o.timeoutId && clearTimeout(o.timeoutId);
+                            }).on("click", o.evnt.clickPrevent).appendTo($tdDiv);
+                            $right.on("mousedown", function (e) {
+                                e.preventDefault()
+                                o.timeoutId = setInterval(o.evnt.rightScroller.bind($right), 1);
+                            }).on("mouseup mouseleave", function (e) {
+                                e.preventDefault();
+                                o.timeoutId && clearTimeout(o.timeoutId);
+                            }).on("click", o.evnt.clickPrevent).appendTo($tdDiv);
+                            $div.css("width", tableWidth + "%");
                         }
-                        for (var key in json) {
-                            $tr = $("<tr></tr>");
-                            $("<td></td>").addClass("k").text(key).appendTo($tr);
-                            if ($.isArray(json[key])) {
-                                $td = $("<td></td>").addClass("o");
-                                $tdDiv = $("<div></div>").addClass("scrollable");
-                                $div = $("<div></div>").addClass("movable");
-                                $tbody = o.func.drawTable($div, false);
-                                $trChild = $("<tr></tr>");
-                                keyLength = json[key].length;
-                                if (keyLength > 1) {
-                                    var $left = $("<a></a>").addClass("left").attr("href", "#"),
-                                        $right = $("<a></a>").addClass("right").attr("href", "#"),
-                                        tableWidth = 100 + ((keyLength - 1)*opt.widthPercentage);
-                                    $("<i></i>").addClass("fa fa-caret-left").appendTo($left);
-                                    $("<i></i>").addClass("fa fa-caret-right").appendTo($right);
-                                    $left.on("mousedown", function (e) {
-                                        e.preventDefault()
-                                        o.timeoutId = setInterval(o.evnt.leftScroller.bind($left), 1);
-                                    }).on("mouseup mouseleave", function (e) {
-                                        e.preventDefault();
-                                        o.timeoutId && clearTimeout(o.timeoutId);
-                                    }).on("click", o.evnt.clickPrevent).appendTo($tdDiv);
-                                    $right.on("mousedown", function (e) {
-                                        e.preventDefault()
-                                        o.timeoutId = setInterval(o.evnt.rightScroller.bind($right), 1);
-                                    }).on("mouseup mouseleave", function (e) {
-                                        e.preventDefault();
-                                        o.timeoutId && clearTimeout(o.timeoutId);
-                                    }).on("click", o.evnt.clickPrevent).appendTo($tdDiv);
-                                    $div.css("width", tableWidth + "%");
-                                }
-                                for (var index in json[key]) {
-                                    headerIndex = parseInt(index) + 1;
-                                    $tdChild = $("<td></td>");
-                                    if ($.isArray(json[key][index])) {
-                                        o.func.drawJSON(json[key][index], o.func.drawTable($tdChild, false), level + 1, index + " (" + headerIndex + ")");
-                                    } else if ($.isPlainObject(json[key][index])) {
-                                        o.func.drawJSON(json[key][index], o.func.drawTable($tdChild, false), level + 1, key + " (" + headerIndex + ")");
-                                    } else {
-                                        $tdChild.addClass("v").text(json[key][index]);
-                                    }
-                                    $tdChild.appendTo($trChild);
-                                }
-                                $trChild.appendTo($tbody);
-                                $div.appendTo($tdDiv);
-                                $tdDiv.appendTo($td);
-                                $td.appendTo($tr);
-                            } else if ($.isPlainObject(json[key])){
-                                $td = $("<td></td>").addClass("o");
-                                o.func.drawJSON(json[key], o.func.drawTable($td, false), level + 1, key);
-                                $td.appendTo($tr);
+                        $trChild.appendTo($tbody);
+                        $div.appendTo($tdDiv);
+                        $tdDiv.appendTo($td);
+                        $td.appendTo($tr);
+                    } else {
+                        $trChild = $tr;
+                    }
+                    for (var i in json[key]) {
+                        $td = $("<td></td>");
+                        boxResult = o.func.drawBoxButton(json[key], i, $td, level);
+                        if (!boxResult.isDraw) {
+                            if (boxResult.isArray) {
+                                o.func.drawArray(json[key], i, o.func.drawTable($td.addClass("o"), true), level + 1);
+                            } else if (boxResult.isPlainObject){
+                                o.func.drawJSON(json[key], i, o.func.drawTable($td.addClass("o"), true), level + 1);
                             } else {
-                                $("<td></td>").addClass("v").text(json[key]).appendTo($tr);
+                                $td.addClass("v").text(json[key][i]);
                             }
-                            $tr.appendTo($container);
                         }
+                        $td.appendTo($trChild);
+                    }
+                    $tr.appendTo($container);
+                },
+                drawJSON: function (json, key, $container, level) {
+                    var k, $tr, $td, boxResult;
+                    for (k in json[key]) {
+                        $tr = $("<tr></tr>");
+                        $("<td></td>").addClass("k").text(k).appendTo($tr);
+                        $td = $("<td></td>");
+                        boxResult = o.func.drawBoxButton(json[key], k, $td, level);
+                        if (!boxResult.isDraw) {
+                            if (boxResult.isArray) {
+                                o.func.drawArray(json[key], k, o.func.drawTable($td.addClass("o"), true), level + 1);
+                            } else if (boxResult.isPlainObject){
+                                o.func.drawJSON(json[key], k, o.func.drawTable($td.addClass("o"), true), level + 1);
+                            } else {
+                                $td.addClass("v").text(json[key][k]);
+                            }
+                        }
+                        $td.appendTo($tr);
+                        $tr.appendTo($container);
                     }
                 },
-                drawBoxButton: function (json, key, level, $container) {
-                    if (level >= opt.displayLevel) {
+                drawBoxButton: function (json, key, $container, level) {
+                    var isArray = $.isArray(json[key]),
+                        isPlainObject = $.isPlainObject(json[key]);
+
+                    if ((isArray || isPlainObject) && level >= opt.displayLevel) {
                         $("<a></a>").attr("href", "#").text("view more").data({
-                            "json": json,
+                            "json": json[key],
                             "key": key
-                        }).click(o.evnt.drawJSONInBox).appendTo($container);
+                        }).click(o.evnt.drawJSONInBox).appendTo($container.addClass("v"));
+                        return {
+                            isDraw: true,
+                            isArray:isArray,
+                            isPlainObject:isPlainObject
+                        };
                     }
+                    return {
+                        isDraw: false,
+                        isArray:isArray,
+                        isPlainObject:isPlainObject
+                    };
                 },
                 drawToggleView: function ($container) {
                     var $a = $("<a></a>").attr({
@@ -187,13 +185,17 @@
                         $div =$("<div></div>");
 
                     $div.JSON2Table({
-                        json: data.json,
-                        displayLevel: opt.displayLevel
+                        data: data.json,
+                        displayLevel: opt.displayLevel,
+                        _callResize: false
                     });
                     bootbox.dialog({
                         title: data.key,
                         message: $div
                     });
+                    setTimeout(function () {
+                        o.$window.resize();
+                    },300)
                 },
                 clickPrevent: function (e) {
                     e.preventDefault();
@@ -220,6 +222,17 @@
                         left = 0;
                     }
                     $movable.css("left",  left);
+                },
+                windowResize: function () {
+                    o.$window.resize(function () {
+                        var $parents = o.$movableDivs.parent();
+                        o.$movableDivs.hide();
+                        $parents.width($parents.width());
+                        setTimeout(function () {
+                            o.$movableDivs.show();
+                        }, 0);
+                    });
+                    opt._callResize && o.$window.resize();
                 }
             }
         }
